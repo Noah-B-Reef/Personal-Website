@@ -28,9 +28,40 @@
         </section>
       {{- end }}
 
-      {{- /* Recent posts list, rendered below the intro */}}
-      <h2>See</h2>
-      {{- partial "post-entries.html" . -}}
+      {{- /* Recent blog posts, rendered below the intro */}}
+      <h2>Recent Posts</h2>
+      {{- $posts := where .Site.RegularPages "Section" "blog" }}
+      <div class="post-entries">
+        {{- range $posts.ByDate.Reverse }}
+          <div class="item">
+            <a href="{{ .Permalink }}">
+              {{- if .Title -}}
+                <h2>
+                  {{- .Title | markdownify -}}
+                </h2>
+              {{- else -}}
+                {{- .File.TranslationBaseName | markdownify -}}
+              {{- end -}}
+            </a>
+
+            {{- if or .Date .Params.Author -}}
+              <p class="post-meta">
+                {{- with .Date -}}
+                  <span>{{ .Format "2006-01-02" -}}</span>
+                {{- end -}}
+
+                {{- with .Params.Author -}}
+                  <span> | {{ . }}</span>
+                {{- end -}}
+              </p>
+            {{- end -}}
+
+            {{- with .Params.Description -}}
+              <p class="post-description">{{ . }}</p>
+            {{- end -}}
+          </div>
+        {{- end }}
+      </div>
     </div>
 
     <footer class="post-footer">
